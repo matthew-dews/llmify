@@ -10,3 +10,6 @@ Hello, world!
 
 # Formating & type checking
 Run `lint.sh`, which will setup a venv and then run the formatter and type checker.
+
+# Building
+Building can help troubleshoot packaging issues. Run `nix build` and then `results/bin/llmify`.
