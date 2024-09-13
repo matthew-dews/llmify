@@ -1,14 +1,4 @@
-Note: venv not currently required for running because we pulled the code in directly to get Windows support
-
-# Setup
-python3 -m venv env
-source env/bin/activate.fish
-pip install -r requirements.txt
-
-# Windows git bash
-python3 -m venv env
-source env/Scripts/activate
-pip install -r requirements.txt
+# llmify
 
 # Usage
 ./llmify.py args
