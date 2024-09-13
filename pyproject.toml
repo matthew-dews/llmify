@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "my-flake-example"
+name = "llmify"
 version = "0.1.0"
 description = ""
 authors = ["Author Name <author@example.com>"]
 # readme = "README.md"
 # license = "BSD"
 packages = [
-  { include = "my-flake-example" }
+  { include = "llmify" }
 ]
 
 [tool.poetry.dependencies]
