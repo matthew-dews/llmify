@@ -313,7 +313,7 @@ def write_to_file(file_contents, output_file):
         file.write("\n".join(file_contents))
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(
         description="Collect files and write their contents to a file."
     )
@@ -333,3 +333,7 @@ if __name__ == "__main__":
     write_to_file(file_contents, output_file)
 
     print(f"Folder contents written to {output_file}")
+
+
+if __name__ == "__main__":
+    main()
