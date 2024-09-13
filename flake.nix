@@ -9,18 +9,18 @@
     let
       system = "x86_64-linux";  # Adjust this if you're on a different system
       pkgs = import nixpkgs { inherit system; };
-      python = pkgs.python3;
+      pythonPackages = pkgs.python3Packages;
     in
     {
-      packages.${system}.llmify = python.lib.buildPythonApplication {
+      packages.${system}.llmify = pythonPackages.buildPythonApplication {
         pname = "llmify";
         version = "1.0.0";  # Update as needed
 
         src = ./.;
 
-        # If your script requires additional Python packages, specify them here
-        propagatedBuildInputs = with python.pkgs; [
-          # Add required Python packages, e.g., requests
+        # Specify Python dependencies here
+        propagatedBuildInputs = with pythonPackages; [
+          # Add required Python packages, e.g.,
           # requests
         ];
 
