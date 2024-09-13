@@ -12,6 +12,9 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.10"
 
+[tool.poetry.scripts]
+llmify = "llmify.cli:main"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
