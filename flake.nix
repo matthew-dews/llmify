@@ -2,7 +2,7 @@
   description = "A Nix flake for the llmify.py script";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";  # Or pin to a specific commit for stability
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
   };
 
   outputs = { self, nixpkgs }:
