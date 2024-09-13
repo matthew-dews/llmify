@@ -7,28 +7,36 @@
 
   outputs = { self, nixpkgs }:
     let
-      system = "x86_64-linux";  # Adjust this if you're on a different system
+      system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
       pythonPackages = pkgs.python3Packages;
     in
     {
-      packages.${system}.llmify = pythonPackages.buildPythonApplication {
+      packages.${system}.llmify = pythonPackages.buildPythonApplication rec {
         pname = "llmify";
-        version = "1.0.0";  # Update as needed
+        version = "1.0.0";
 
         src = ./.;
 
-        # Specify Python dependencies here
+        format = "other";  # Skip the default build process that expects setup.py
+
         propagatedBuildInputs = with pythonPackages; [
-          # Add required Python packages, e.g.,
+          # Add required Python packages here
+          # Example: requests
           # requests
         ];
 
-        # Install the script
+        # Override build phases
+        buildPhase = "echo 'No build required'";
         installPhase = ''
           mkdir -p $out/bin
           cp llmify.py $out/bin/llmify
           chmod +x $out/bin/llmify
+        '';
+
+        # Ensure the script runs with the correct interpreter and PYTHONPATH
+        postFixup = ''
+          wrapProgram $out/bin/llmify --prefix PYTHONPATH : ${pythonPackages.concatPackages propagatedBuildInputs}/lib/python${pythonPackages.pythonVersion}/site-packages
         '';
 
         meta = with pkgs.lib; {
