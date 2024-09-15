@@ -12,8 +12,17 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.10"
 
+[tool.poetry.group.dev.dependencies]
+black = "^23.3.0"
+mypy = "^1.11.0"
+
 [tool.poetry.scripts]
 llmify = "llmify.__main__:main"
+
+[tool.black]
+
+[tool.mypy]
+strict = true
 
 [build-system]
 requires = ["poetry-core"]
