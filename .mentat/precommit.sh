@@ -15,5 +15,4 @@ if [ -n "$CHANGED_PY_FILES" ]; then
     "$POETRY_PATH" run mypy $CHANGED_PY_FILES
 fi
 
-# Run tests since they're not in CI
 "$POETRY_PATH" run pytest
