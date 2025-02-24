@@ -39,7 +39,9 @@ from pathlib import Path
 from typing import Callable, List, Optional, Reversible, Tuple, Union
 
 
-def handle_negation(file_path: Union[str, Path], rules: Reversible["IgnoreRule"]) -> bool:
+def handle_negation(
+    file_path: Union[str, Path], rules: Reversible["IgnoreRule"]
+) -> bool:
     for rule in reversed(rules):
         if rule.match(file_path):
             return not rule.negation
@@ -73,7 +75,7 @@ def parse_gitignore(
 def rule_from_pattern(
     pattern: str,
     base_path: Optional[Path] = None,
-    source: Optional[tuple[str, int]] = None
+    source: Optional[tuple[str, int]] = None,
 ) -> Optional["IgnoreRule"]:
     """
     Take a .gitignore match pattern, such as "*.py[cod]" or "**/*.bak",
@@ -160,6 +162,7 @@ class IgnoreRule(NamedTuple):
     anchored: bool
     base_path: Optional[Path]
     source: Optional[tuple[str, int]]
+
     def __str__(self):
         return self.pattern
 
