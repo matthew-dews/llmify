@@ -1,10 +1,13 @@
 import argparse
 import os
 import re
+from typing import List, Optional
 from llmify.gitignore_parser import parse_gitignore
 
 
-def collect_files(directory, gitignore_path, exclude_pattern=None):
+def collect_files(
+    directory: str, gitignore_path: str, exclude_pattern: Optional[str] = None
+) -> List[str]:
     gitignore = parse_gitignore(os.path.abspath(gitignore_path))
 
     file_contents = []
@@ -28,12 +31,12 @@ def collect_files(directory, gitignore_path, exclude_pattern=None):
     return file_contents
 
 
-def write_to_file(file_contents, output_file):
+def write_to_file(file_contents: List[str], output_file: str) -> None:
     with open(output_file, "w") as file:
         file.write("\n".join(file_contents))
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="Collect files and write their contents to a file."
     )

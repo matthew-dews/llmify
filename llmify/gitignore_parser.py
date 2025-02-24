@@ -31,23 +31,24 @@
 # https://github.com/mherrmann/gitignore_parser/blob/c1fa2cb6b6365c208816ac2ca39aa7b258025428/LICENSE
 
 
-import collections
 import os
 import re
 import sys
 from os.path import abspath, dirname
 from pathlib import Path
-from typing import Reversible, Union
+from typing import Callable, List, Optional, Reversible, Tuple, Union
 
 
-def handle_negation(file_path, rules: Reversible["IgnoreRule"]):
+def handle_negation(file_path: Union[str, Path], rules: Reversible["IgnoreRule"]) -> bool:
     for rule in reversed(rules):
         if rule.match(file_path):
             return not rule.negation
     return False
 
 
-def parse_gitignore(full_path, base_dir=None):
+def parse_gitignore(
+    full_path: str, base_dir: Optional[str] = None
+) -> Callable[[Union[str, Path]], bool]:
     if base_dir is None:
         base_dir = dirname(full_path)
     rules = []
@@ -69,7 +70,11 @@ def parse_gitignore(full_path, base_dir=None):
         return lambda file_path: handle_negation(file_path, rules)
 
 
-def rule_from_pattern(pattern, base_path=None, source=None):
+def rule_from_pattern(
+    pattern: str,
+    base_path: Optional[Path] = None,
+    source: Optional[tuple[str, int]] = None
+) -> Optional["IgnoreRule"]:
     """
     Take a .gitignore match pattern, such as "*.py[cod]" or "**/*.bak",
     and return an IgnoreRule suitable for matching against files and
@@ -144,18 +149,17 @@ def rule_from_pattern(pattern, base_path=None, source=None):
     )
 
 
-IGNORE_RULE_FIELDS = [
-    "pattern",
-    "regex",  # Basic values
-    "negation",
-    "directory_only",
-    "anchored",  # Behavior flags
-    "base_path",  # Meaningful for gitignore-style behavior
-    "source",  # (file, line) tuple for reporting
-]
+from typing import NamedTuple
 
 
-class IgnoreRule(collections.namedtuple("IgnoreRule_", IGNORE_RULE_FIELDS)):
+class IgnoreRule(NamedTuple):
+    pattern: str
+    regex: str
+    negation: bool
+    directory_only: bool
+    anchored: bool
+    base_path: Optional[Path]
+    source: Optional[tuple[str, int]]
     def __str__(self):
         return self.pattern
 
@@ -187,8 +191,8 @@ class IgnoreRule(collections.namedtuple("IgnoreRule_", IGNORE_RULE_FIELDS)):
 # Frustratingly, python's fnmatch doesn't provide the FNM_PATHNAME
 # option that .gitignore's behavior depends on.
 def fnmatch_pathname_to_regex(
-    pattern, directory_only: bool, negation: bool, anchored: bool = False
-):
+    pattern: str, directory_only: bool, negation: bool, anchored: bool = False
+) -> str:
     """
     Implements fnmatch style-behavior, as though with FNM_PATHNAME flagged;
     the path separator will not match shell-style '*' and '.' wildcards.
@@ -267,7 +271,7 @@ def _normalize_path(path: Union[str, Path]) -> Path:
     return Path(abspath(path))
 
 
-def _count_trailing_symbol(symbol: str, text: str) -> int:
+def _count_trailing_symbol(symbol: str, text: Union[str, Path]) -> int:
     """Count the number of trailing characters in a string."""
     count = 0
     for char in reversed(str(text)):

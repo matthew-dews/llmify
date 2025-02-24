@@ -4,7 +4,7 @@ from pathlib import Path
 from llmify.__main__ import collect_files, write_to_file
 
 
-def create_test_files(tmp_path):
+def create_test_files(tmp_path: Path) -> None:
     """Helper function to create a test directory structure"""
     # Create some test files
     (tmp_path / "file1.txt").write_text("content1")
@@ -28,7 +28,7 @@ ignored_dir/
     (ignored_dir / "ignored.txt").write_text("should not be included")
 
 
-def test_basic_file_collection(tmp_path):
+def test_basic_file_collection(tmp_path: Path) -> None:
     """Test basic file collection without any exclusions"""
     create_test_files(tmp_path)
 
@@ -47,7 +47,7 @@ def test_basic_file_collection(tmp_path):
     assert "subdir/file3.txt" in "\n".join(file_contents)
 
 
-def test_gitignore_exclusion(tmp_path):
+def test_gitignore_exclusion(tmp_path: Path) -> None:
     """Test that .gitignore rules are respected"""
     create_test_files(tmp_path)
 
@@ -60,7 +60,7 @@ def test_gitignore_exclusion(tmp_path):
     assert "ignored_dir" not in "\n".join(file_contents)
 
 
-def test_exclude_pattern(tmp_path):
+def test_exclude_pattern(tmp_path: Path) -> None:
     """Test the exclude pattern functionality"""
     create_test_files(tmp_path)
 
@@ -80,7 +80,7 @@ def test_exclude_pattern(tmp_path):
     assert "file3.txt" not in "\n".join(file_contents)
 
 
-def test_output_format(tmp_path):
+def test_output_format(tmp_path: Path) -> None:
     """Test that the output is formatted correctly"""
     # Create a simple test file
     test_file = tmp_path / "test.txt"
@@ -94,7 +94,7 @@ def test_output_format(tmp_path):
     assert file_contents[0] == expected_format
 
 
-def test_write_to_file(tmp_path):
+def test_write_to_file(tmp_path: Path) -> None:
     """Test writing collected contents to a file"""
     content = ["# file1.txt\n```\ncontent1\n```\n"]
     output_file = tmp_path / "output.md"
