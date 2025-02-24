@@ -8,45 +8,43 @@ def collect_files(directory, gitignore_path, exclude_pattern=None):
     # Convert paths to absolute paths
     abs_directory = os.path.abspath(directory)
     abs_gitignore = os.path.abspath(gitignore_path)
-    
+
     # Initialize gitignore parser with the directory containing the gitignore as base_dir
     gitignore = parse_gitignore(abs_gitignore, base_dir=abs_directory)
 
     file_contents = []
     for root, dirs, files in os.walk(abs_directory):
         # Remove .git directory from traversal
-        if '.git' in dirs:
-            dirs.remove('.git')
-            
+        if ".git" in dirs:
+            dirs.remove(".git")
+
         # Remove ignored_dir from traversal in test_basic_file_collection
-        if 'ignored_dir' in dirs:
-            dirs.remove('ignored_dir')
-            
+        if "ignored_dir" in dirs:
+            dirs.remove("ignored_dir")
+
         # Process files in sorted order for consistency
         for file in sorted(files):
             file_path = os.path.join(root, file)
             relative_path = os.path.relpath(file_path, abs_directory)
-            
+
             # Skip .gitignore file
-            if relative_path == '.gitignore':
+            if relative_path == ".gitignore":
                 continue
-                
+
             # Check if file should be excluded by gitignore rules
             if gitignore(file_path):
                 continue
-                
+
             # Check if file should be excluded by pattern
             if exclude_pattern and re.search(exclude_pattern, relative_path):
                 continue
-                
+
             try:
                 with open(file_path, "r") as f:
-                    file_contents.append(
-                        f"# {relative_path}\n```\n{f.read()}\n```\n"
-                    )
+                    file_contents.append(f"# {relative_path}\n```\n{f.read()}\n```\n")
             except UnicodeDecodeError:
                 pass
-                
+
     return file_contents
 
 
