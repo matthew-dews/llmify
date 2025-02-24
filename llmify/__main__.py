@@ -1,5 +1,6 @@
 import argparse
 import os
+import re
 from llmify.gitignore_parser import parse_gitignore
 
 
