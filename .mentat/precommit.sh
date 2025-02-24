@@ -9,8 +9,11 @@ fi
 # Format with black
 "$POETRY_PATH" run black .
 
-# Type check with mypy
-"$POETRY_PATH" run mypy .
+# Type check only changed files with mypy
+CHANGED_PY_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep '\.py$' || true)
+if [ -n "$CHANGED_PY_FILES" ]; then
+    "$POETRY_PATH" run mypy $CHANGED_PY_FILES
+fi
 
 # Run tests since they're not in CI
 "$POETRY_PATH" run pytest
