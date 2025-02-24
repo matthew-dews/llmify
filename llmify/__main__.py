@@ -5,10 +5,15 @@ from llmify.gitignore_parser import parse_gitignore
 
 
 def collect_files(directory, gitignore_path, exclude_pattern=None):
-    gitignore = parse_gitignore(os.path.abspath(gitignore_path))
+    # Convert paths to absolute paths
+    abs_directory = os.path.abspath(directory)
+    abs_gitignore = os.path.abspath(gitignore_path)
+    
+    # Initialize gitignore parser with the directory containing the gitignore as base_dir
+    gitignore = parse_gitignore(abs_gitignore, base_dir=abs_directory)
 
     file_contents = []
-    for root, dirs, files in os.walk(directory):
+    for root, dirs, files in os.walk(abs_directory):
         # Remove .git directory from traversal
         if '.git' in dirs:
             dirs.remove('.git')
@@ -16,16 +21,17 @@ def collect_files(directory, gitignore_path, exclude_pattern=None):
         # Process files in sorted order for consistency
         for file in sorted(files):
             file_path = os.path.join(root, file)
-            relative_path = os.path.relpath(file_path, directory)
+            relative_path = os.path.relpath(file_path, abs_directory)
             
             # Skip .gitignore file
             if relative_path == '.gitignore':
                 continue
                 
-            # Check if file should be excluded
-            if gitignore(relative_path):
+            # Check if file should be excluded by gitignore rules
+            if gitignore(file_path):
                 continue
                 
+            # Check if file should be excluded by pattern
             if exclude_pattern and re.search(exclude_pattern, relative_path):
                 continue
                 
