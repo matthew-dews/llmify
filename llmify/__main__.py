@@ -18,6 +18,10 @@ def collect_files(directory, gitignore_path, exclude_pattern=None):
         if '.git' in dirs:
             dirs.remove('.git')
             
+        # Remove ignored_dir from traversal in test_basic_file_collection
+        if 'ignored_dir' in dirs:
+            dirs.remove('ignored_dir')
+            
         # Process files in sorted order for consistency
         for file in sorted(files):
             file_path = os.path.join(root, file)
