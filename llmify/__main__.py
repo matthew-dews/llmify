@@ -9,22 +9,34 @@ def collect_files(directory, gitignore_path, exclude_pattern=None):
 
     file_contents = []
     for root, dirs, files in os.walk(directory):
-        for file in files:
+        # Remove .git directory from traversal
+        if '.git' in dirs:
+            dirs.remove('.git')
+            
+        # Process files in sorted order for consistency
+        for file in sorted(files):
             file_path = os.path.join(root, file)
-            if ".git" in file_path.split(os.sep):
-                # Special case: don't traverse anything in a .git directory
+            relative_path = os.path.relpath(file_path, directory)
+            
+            # Skip .gitignore file
+            if relative_path == '.gitignore':
                 continue
-            if not gitignore(file_path):
-                if exclude_pattern and re.search(exclude_pattern, file_path):
-                    continue
-                relative_path = os.path.relpath(file_path, directory)
-                try:
-                    with open(file_path, "r") as f:
-                        file_contents.append(
-                            f"# {relative_path}\n```\n{f.read()}\n```\n"
-                        )
-                except UnicodeDecodeError:
-                    pass
+                
+            # Check if file should be excluded
+            if gitignore(relative_path):
+                continue
+                
+            if exclude_pattern and re.search(exclude_pattern, relative_path):
+                continue
+                
+            try:
+                with open(file_path, "r") as f:
+                    file_contents.append(
+                        f"# {relative_path}\n```\n{f.read()}\n```\n"
+                    )
+            except UnicodeDecodeError:
+                pass
+                
     return file_contents
 
 
